@@ -1,0 +1,103 @@
+rules:
+  - name: SQL 注入关键字检测
+    attack_type: SQL 注入
+    severity: 高危
+    score: 35
+    fields:
+      - url
+    patterns:
+      - "union\\s+select"
+      - "select\\s+.+\\s+from"
+      - "or\\s+1=1"
+      - "information_schema"
+      - "sleep\\s*\\("
+      - "benchmark\\s*\\("
+    description: 检测 URL 参数中常见的 SQL 注入关键字。
+
+  - name: XSS 脚本注入检测
+    attack_type: XSS
+    severity: 中危
+    score: 25
+    fields:
+      - url
+      - referer
+    patterns:
+      - "<script"
+      - "alert\\s*\\("
+      - "onerror\\s*="
+      - "javascript:"
+      - "%3cscript"
+    description: 检测常见反射型 XSS 特征。
+
+  - name: 命令执行特征检测
+    attack_type: 命令执行
+    severity: 高危
+    score: 40
+    fields:
+      - url
+    patterns:
+      - ";\\s*(whoami|id|cat|curl|wget|bash|sh)"
+      - "\\|\\s*(whoami|id|cat|curl|wget|bash|sh)"
+      - "`\\s*(whoami|id|cat|curl|wget|bash|sh)"
+      - "\\$\\("
+    description: 检测 URL 参数中疑似命令拼接与命令执行行为。
+
+  - name: 敏感文件访问检测
+    attack_type: 敏感文件访问
+    severity: 高危
+    score: 30
+    fields:
+      - url
+    patterns:
+      - "/\\.env"
+      - "/\\.git/config"
+      - "/etc/passwd"
+      - "config\\.php"
+      - "backup"
+      - "\\.bak"
+      - "\\.sql"
+    description: 检测敏感配置文件、源码仓库和备份文件访问。
+
+  - name: 目录扫描与后台探测
+    attack_type: 目录扫描 / 后台探测
+    severity: 中危
+    score: 20
+    fields:
+      - url
+    patterns:
+      - "/admin"
+      - "/phpmyadmin"
+      - "/wp-admin"
+      - "/manager/html"
+      - "/console"
+    description: 检测常见后台入口和管理页面探测行为。
+
+  - name: Webshell 探测
+    attack_type: Webshell 探测
+    severity: 高危
+    score: 35
+    fields:
+      - url
+    patterns:
+      - "shell\\.php"
+      - "cmd\\.php"
+      - "webshell"
+      - "eval\\("
+      - "assert\\("
+      - "upload/.+\\.php"
+    description: 检测攻击者探测或访问 Webshell 的行为。
+
+  - name: 可疑扫描器 User-Agent
+    attack_type: 可疑 User-Agent
+    severity: 中危
+    score: 20
+    fields:
+      - user_agent
+    patterns:
+      - "sqlmap"
+      - "gobuster"
+      - "nmap"
+      - "nikto"
+      - "python-requests"
+      - "curl"
+    description: 检测常见扫描器、脚本化工具和自动化请求特征。
