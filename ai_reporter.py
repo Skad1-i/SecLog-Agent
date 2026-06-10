@@ -4,7 +4,7 @@ import requests
 
 
 DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"
-DEEPSEEK_MODEL = "deepseek-chat"
+DEEPSEEK_MODEL = "deepseek-v4-flash"
 
 
 def build_report_prompt(basic_stats, attack_stats, ip_risk_list, suspicious_logs):
